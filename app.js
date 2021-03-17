@@ -180,7 +180,7 @@ class MyMain extends React.Component {
 			FormSearchstyle:{
 		display:"block"
 	},FormCategorystyle:{
-		display:"block"
+		display:"none"
 	},FormDetail:{
 		display:"none"
 	}
