@@ -284,7 +284,6 @@ class MyMain extends React.Component {
         })
 	  
 	  }
-	   <button type="submit" onClick={this.showIndex} className="btn btn-primary mt-3">Return</button>
   </div>
   <div style={this.state.FormSearchstyle}>
      <form className="mt-3" onSubmit={this.getSearch}>
