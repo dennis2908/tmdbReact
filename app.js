@@ -33,6 +33,7 @@ class MyMain extends React.Component {
 	this.inputCek = "";
 	this.items = [];
 	this.perPage = "";
+	this.perPageSearch = "";
 	this.bin = "";
     this.state = {rows1:[],inputAngka: '', result: "",items : [],rows:[],rowsSearch:[],FormSearchstyle:{
 		display:"block"
@@ -158,6 +159,7 @@ class MyMain extends React.Component {
   getSearch(event) {
 	this.page = 1;
 	this.query = event.target.inputSearch.value;
+	this.perPageSearch = event.target.perPageSearch.value;
 	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
       .then(res => res.json())
       .then(
@@ -292,6 +294,13 @@ class MyMain extends React.Component {
     <label htmlFor="inputSearch" className="form-label">Keyword</label>
     <input type="text" className="form-control" id="inputSearch" name = "inputSearch" required/>
   </div>
+  <div className="mb-3">
+    <label htmlFor="perPageSearch" className="form-label">Per Page</label>
+    <select name="perPageSearch" id="perPageSearch" onchange="" className="form-control">
+  <option value="0">20</option>
+  <option value="15">15</option>
+</select>
+  </div>
   <button type="submit" className="btn btn-primary mb-2 ">Search</button>
 </form>
 <div className="row">
@@ -309,13 +318,24 @@ class MyMain extends React.Component {
                <tbody>
 			    {
 				   
-				   this.state.rowsSearch.map((k, v) => {					   
+				   this.state.rowsSearch.map((k, v) => {	
+                   let perPageSearch = parseInt(this.perPageSearch);
+                   if(!perPageSearch)
+                       perPageSearch = 20;					   
 				   var page = v+1;
         		   if(this.page > 1){
-					   page=(20*(this.page-1))+v+1;
+					   page=(perPageSearch*(this.page-1))+v+1;
 				   }   					
 				   let poster_path =  "https://image.tmdb.org/t/p/w500/" + k.poster_path;          
-				   // Return the element. Also pass key     
+				   // Return the element. Also pass key   
+				   				
+				   if(perPageSearch != 20) {
+					   if((v+1) > perPageSearch)
+					   {
+						  return;
+					   }
+						    
+				   }		
 				   return (
 				   <tr key={String(k) + String(v)}><th scope="col">{page}</th>
 				   <th scope="col">{k.title}</th>
@@ -375,7 +395,6 @@ class MyMain extends React.Component {
                <tbody>
 			    {this.state.rows.map((k, v) => {
 				let perPage = parseInt(this.perPage);					
-				console.log(perPage);
 				   if(perPage) {
 					   if((v+1) > perPage)
 					   {
