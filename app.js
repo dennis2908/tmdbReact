@@ -156,18 +156,15 @@ class MyMain extends React.Component {
 	   });
   }
   goToPage(thePage,e) {
-	  console.log(e);
-	  this.setState({
-		  page:thePage
-	  })
 	  console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+thePage)
-    fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+thePage)
+	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+thePage)
       .then(res => res.json())
       .then(
         (result) => {
 	   this.setState({
             rowsSearch: result.results,
 			total_pagesSearch:result.total_pages,
+			page:thePage,
 			FormSearchstyle:{
 		display:"block"
 	},FormCategorystyle:{
@@ -205,7 +202,8 @@ class MyMain extends React.Component {
   }
   nextPage(event) {
 	let mypage = this.state.page+1;
-	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.state.page)
+	console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+mypage);
+	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+mypage)
       .then(res => res.json())
       .then(
         (result) => {
@@ -225,7 +223,7 @@ class MyMain extends React.Component {
   }
   beforePage(event) {
 	let mypage = this.state.page-1;
-	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
+	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+mypage)
       .then(res => res.json())
       .then(
         (result) => {
@@ -282,7 +280,6 @@ class MyMain extends React.Component {
 	if(this.state.page > 1)
 		listPagination.push(<li key="beforePage" className="page-item"><a className="page-link" href="#" onClick={this.beforePage}>Previous</a></li>);
     for (var i = 1; i <= this.state.total_pagesSearch; i++) {
-		console.log(i);
 		listPagination.push(<li key={String(i)} className="page-item"><a className="page-link" href="#"onClick={this.goToPage.bind(this, i)}>{i}</a></li>);
     }
 	if(this.state.total_pagesSearch!=this.state.page)
