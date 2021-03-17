@@ -346,7 +346,7 @@ class MyMain extends React.Component {
                </tbody>
               </table>
           </div>
-		<div className="row g-3 align-items-center">
+		<div className="row align-items-center mb-2">
   <div className="col-auto">
      <button type="submit" className="form-control btn btn-primary" onClick={this.beforePage}>Before Page</button>
   </div>
