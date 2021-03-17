@@ -180,8 +180,9 @@ class MyMain extends React.Component {
 	this.query = event.target.inputSearch.value;
 	this.setState({
 		     page : 1,
-   });
-	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.state.page)
+    });
+	console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page=1");
+	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page=1")
       .then(res => res.json())
       .then(
         (result) => {
