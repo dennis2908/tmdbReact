@@ -180,8 +180,7 @@ class MyMain extends React.Component {
 	this.query = event.target.inputSearch.value;
 	this.setState({
 		     page : 1,
-             perPageSearch: event.target.perPageSearch.value
-	});
+   });
 	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.state.page)
       .then(res => res.json())
       .then(
@@ -328,13 +327,6 @@ class MyMain extends React.Component {
   <div className="mb-3">
     <label htmlFor="inputSearch" className="form-label">Keyword</label>
     <input type="text" className="form-control" id="inputSearch" name = "inputSearch" required/>
-  </div>
-  <div className="mb-3">
-    <label htmlFor="perPageSearch" className="form-label">Per Page</label>
-    <select name="perPageSearch" id="perPageSearch" className="form-control">
-  <option value="0">20</option>
-  <option value="15">15</option>
-</select>
   </div>
   <button type="submit" className="btn btn-primary mb-2 ">Search</button>
 </form>
