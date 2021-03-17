@@ -279,7 +279,7 @@ class MyMain extends React.Component {
 
 	render() {
 	let listPagination = [];
-	if(this.state.page!=1)
+	if(this.state.page > 1)
 		listPagination.push(<li key="beforePage" className="page-item"><a className="page-link" href="#" onClick={this.beforePage}>Previous</a></li>);
     for (var i = 1; i <= this.state.total_pagesSearch; i++) {
 		console.log(i);
