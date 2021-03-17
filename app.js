@@ -279,10 +279,15 @@ class MyMain extends React.Component {
 
 	render() {
 	let listPagination = [];
+	if(this.state.page!=1)
+		listPagination.push(<li key="beforePage" className="page-item"><a className="page-link" href="#" onClick={this.beforePage}>Previous</a></li>);
     for (var i = 1; i <= this.state.total_pagesSearch; i++) {
 		console.log(i);
 		listPagination.push(<li key={String(i)} className="page-item"><a className="page-link" href="#"onClick={this.goToPage.bind(this, i)}>{i}</a></li>);
     }
+	if(this.state.total_pagesSearch!=this.state.page)
+		listPagination.push(<li key="nextPage" className="page-item"><a className="page-link" href="#" onClick={this.nextPage}>Next</a></li>);
+	
     return (
 	<div>
 	<nav className="navbar navbar-expand-lg navbar-light bg-primary">
@@ -383,9 +388,8 @@ class MyMain extends React.Component {
           </div>
 		<nav aria-label="Page navigation example">
   <ul className="pagination">
-    <li className="page-item"><a className="page-link" href="#" onClick={this.beforePage}>Previous</a></li>
-  {listPagination}
-    <li className="page-item"><a className="page-link" href="#" onClick={this.nextPage}>Next</a></li>
+      {listPagination}
+    
   </ul>
 </nav>
 
