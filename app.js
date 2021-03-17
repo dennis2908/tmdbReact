@@ -32,6 +32,7 @@ class MyMain extends React.Component {
 	this.page=1;
 	this.inputCek = "";
 	this.items = [];
+	this.perPage = "";
 	this.bin = "";
     this.state = {rows1:[],inputAngka: '', result: "",items : [],rows:[],rowsSearch:[],FormSearchstyle:{
 		display:"block"
@@ -40,8 +41,7 @@ class MyMain extends React.Component {
 	},FormDetail:{
 		display:"none"
 	}};
-    this.handleSubmit = this.handleSubmit.bind(this);
-	this.myCategory = this.myCategory.bind(this);
+ 	this.myCategory = this.myCategory.bind(this);
 	this.getSearch = this.getSearch.bind(this);
 	this.nextPage = this.nextPage.bind(this);
 	this.beforePage = this.beforePage.bind(this);
@@ -53,8 +53,6 @@ class MyMain extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-		  console.log(result.results);	
-		  console.log(result.results[0]);	
 		  this.setState({
              rows: result.results,
 		  });
@@ -75,17 +73,9 @@ class MyMain extends React.Component {
   }
  
   
-  handleSubmit(event) {
-	this.inputAngka = event.target.inputAngka.value;
-    this.setState({
-             result: this.prosesCek()
-    });
-	event.preventDefault();
-	
-  } 
-  
   myCategory(event) {
-	let category = event.target.category.value;  
+	let category = event.target.category.value;
+	this.perPage = 	event.target.perPage.value;
 	if(category == 1){
 		this.getAPICategory("https://api.themoviedb.org/3/movie/popular	?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US");
 	}
@@ -103,7 +93,6 @@ class MyMain extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-		  console.log(result.results);	
 		  this.setState({
              rows: result.results
 		  });
@@ -153,8 +142,7 @@ class MyMain extends React.Component {
   
  
   getDetail(data) {
-    console.log(data);
-	   let rowsx = [];
+       let rowsx = [];
        rowsx[0] = data;
 	   this.setState({
             rows1 : rowsx,
@@ -174,7 +162,6 @@ class MyMain extends React.Component {
       .then(res => res.json())
       .then(
         (result) => {
-			console.log(result.results);
 	   this.setState({
             rowsSearch: result.results,
 			FormSearchstyle:{
@@ -190,12 +177,10 @@ class MyMain extends React.Component {
   }
   nextPage(event) {
 	this.page++;
-	console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page);
 	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
       .then(res => res.json())
       .then(
         (result) => {
-			console.log(result.results);
 	   this.setState({
             rowsSearch: result.results,
 			FormSearchstyle:{
@@ -211,12 +196,10 @@ class MyMain extends React.Component {
   }
   beforePage(event) {
 	this.page--;
-	console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page);
 	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
       .then(res => res.json())
       .then(
         (result) => {
-			console.log(result.results);
 	   this.setState({
             rowsSearch: result.results,
 			FormSearchstyle:{
@@ -289,7 +272,6 @@ class MyMain extends React.Component {
 	 <h3><span className="badge bg-info mt-4 text-start">Detail Movie</span></h3> 
 	  {
 		  this.state.rows1.map((k, v) => {     
-           console.log("Entered");      
            let poster_path =  "https://image.tmdb.org/t/p/w500/" + k.poster_path;          
            // Return the element. Also pass key     
            return (
@@ -328,7 +310,7 @@ class MyMain extends React.Component {
                <tbody>
 			    {
 				   
-				   this.state.rowsSearch.map((k, v) => {  
+				   this.state.rowsSearch.map((k, v) => {					   
 				   var page = v+1;
         		   if(this.page > 1){
 					   page=(20*(this.page-1))+v+1;
@@ -369,6 +351,13 @@ class MyMain extends React.Component {
   <option value="3">Now Playing Movie</option>
 </select>
   </div>
+  <div className="mb-3">
+    <label htmlFor="perPage" className="form-label">Per Page</label>
+    <select name="perPage" id="perPage" className="form-control">
+  <option value="0">20</option>
+  <option value="15">15</option>
+</select>
+  </div>
   <button type="submit" className="btn btn-primary">Submit</button>
    <h3><span className="badge bg-info mt-4 text-start" dangerouslySetInnerHTML={{__html: this.state.result}}></span></h3> 
 </form>
@@ -385,8 +374,16 @@ class MyMain extends React.Component {
 				</tr>
 			  </thead>
                <tbody>
-			    {this.state.rows.map((k, v) => {     
-				   console.log("Entered");      
+			    {this.state.rows.map((k, v) => {
+				let perPage = parseInt(this.perPage);					
+				console.log(perPage);
+				   if(perPage) {
+					   if((v+1) > perPage)
+					   {
+						  return;
+					   }
+						    
+				   }
 				   let poster_path =  "https://image.tmdb.org/t/p/w500/" + k.poster_path;          
 				   // Return the element. Also pass key     
 				   return (
