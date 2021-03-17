@@ -296,7 +296,7 @@ class MyMain extends React.Component {
   </div>
   <div className="mb-3">
     <label htmlFor="perPageSearch" className="form-label">Per Page</label>
-    <select name="perPageSearch" id="perPageSearch" onchange="" className="form-control">
+    <select name="perPageSearch" id="perPageSearch" className="form-control">
   <option value="0">20</option>
   <option value="15">15</option>
 </select>
