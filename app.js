@@ -29,13 +29,11 @@ class MyMain extends React.Component {
     super(props);
 	this.inputAngka = "";  
 	this.query="raya";
-	this.page=1;
+	this.total_pagesSearch = 1;
 	this.inputCek = "";
 	this.items = [];
-	this.perPage = "";
-	this.perPageSearch = "";
 	this.bin = "";
-    this.state = {rows1:[],inputAngka: '', result: "",items : [],rows:[],rowsSearch:[],FormSearchstyle:{
+	this.state = {rows1:[],inputAngka: '', result: "",items : [],rows:[],page:1,rowsSearch:[],total_pagesSearch:1, perPageSearch:"",FormSearchstyle:{
 		display:"block"
 	},FormCategorystyle:{
 		display:"none"
@@ -69,6 +67,7 @@ class MyMain extends React.Component {
         (result) => {
 		  this.setState({
              rowsSearch: result.results,
+			 total_pagesSearch:result.total_pages
 		  });
 		});	
   }
@@ -156,16 +155,43 @@ class MyMain extends React.Component {
 	}
 	   });
   }
-  getSearch(event) {
-	this.page = 1;
-	this.query = event.target.inputSearch.value;
-	this.perPageSearch = event.target.perPageSearch.value;
-	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
+  goToPage(thePage,e) {
+	  console.log(e);
+	  this.setState({
+		  page:thePage
+	  })
+	  console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+thePage)
+    fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+thePage)
       .then(res => res.json())
       .then(
         (result) => {
 	   this.setState({
             rowsSearch: result.results,
+			total_pagesSearch:result.total_pages,
+			FormSearchstyle:{
+		display:"block"
+	},FormCategorystyle:{
+		display:"none"
+	},FormDetail:{
+		display:"none"
+	}
+	   });
+		});	
+		event.preventDefault();
+  }
+  getSearch(event) {
+	this.query = event.target.inputSearch.value;
+	this.setState({
+		     page : 1,
+             perPageSearch: event.target.perPageSearch.value
+	});
+	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.state.page)
+      .then(res => res.json())
+      .then(
+        (result) => {
+	   this.setState({
+            rowsSearch: result.results,
+			total_pagesSearch:result.total_pages,
 			FormSearchstyle:{
 		display:"block"
 	},FormCategorystyle:{
@@ -178,12 +204,13 @@ class MyMain extends React.Component {
 	   event.preventDefault();
   }
   nextPage(event) {
-	this.page++;
-	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
+	let mypage = this.state.page+1;
+	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.state.page)
       .then(res => res.json())
       .then(
         (result) => {
 	   this.setState({
+		    page:mypage,
             rowsSearch: result.results,
 			FormSearchstyle:{
 		display:"block"
@@ -197,12 +224,13 @@ class MyMain extends React.Component {
 	   event.preventDefault();
   }
   beforePage(event) {
-	this.page--;
+	let mypage = this.state.page-1;
 	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+this.page)
       .then(res => res.json())
       .then(
         (result) => {
 	   this.setState({
+		     page:mypage,
             rowsSearch: result.results,
 			FormSearchstyle:{
 		display:"block"
@@ -250,6 +278,11 @@ class MyMain extends React.Component {
   }
 
 	render() {
+	let listPagination = [];
+    for (var i = 1; i <= this.state.total_pagesSearch; i++) {
+		console.log(i);
+		listPagination.push(<li key={String(i)} className="page-item"><a className="page-link" href="#"onClick={this.goToPage.bind(this, i)}>{i}</a></li>);
+    }
     return (
 	<div>
 	<nav className="navbar navbar-expand-lg navbar-light bg-primary">
@@ -319,12 +352,13 @@ class MyMain extends React.Component {
 			    {
 				   
 				   this.state.rowsSearch.map((k, v) => {	
-                   let perPageSearch = parseInt(this.perPageSearch);
+                   let perPageSearch = parseInt(this.state.perPageSearch);
+				   console.log(this.state.page);
                    if(!perPageSearch)
                        perPageSearch = 20;					   
 				   var page = v+1;
-        		   if(this.page > 1){
-					   page=(perPageSearch*(this.page-1))+v+1;
+        		   if(this.state.page > 1){
+					   page=(perPageSearch*(this.state.page-1))+v+1;
 				   }   					
 				   let poster_path =  "https://image.tmdb.org/t/p/w500/" + k.poster_path;          
 				   // Return the element. Also pass key   
@@ -340,21 +374,20 @@ class MyMain extends React.Component {
 				   <tr key={String(k) + String(v)}><th scope="col">{page}</th>
 				   <th scope="col">{k.title}</th>
 				   <th scope="col">{k.vote_count}</th>
-				   <th scope="col"> <img src={poster_path} onClick={() => this.getDetail(k)} alt="Girl in a jacket" width="130" height="130"/> </th>
+				   <th scope="col"> <img src={poster_path} onClick={() => this.getDetail(k)} alt={k.title} width="130" height="130"/> </th>
 				   <th scope="col">{k.release_date}</th>
 				   </tr>) 
 				})}
                </tbody>
               </table>
           </div>
-		<div className="row align-items-center mb-2">
-  <div className="col-auto">
-     <button type="submit" className="form-control btn btn-primary" onClick={this.beforePage}>Before Page</button>
-  </div>
-  <div className="col-auto">
-     <button type="submit" className="form-control btn btn-primary" onClick={this.nextPage}>Next Page</button>
-  </div>
-</div>
+		<nav aria-label="Page navigation example">
+  <ul className="pagination">
+    <li className="page-item"><a className="page-link" href="#" onClick={this.beforePage}>Previous</a></li>
+  {listPagination}
+    <li className="page-item"><a className="page-link" href="#" onClick={this.nextPage}>Next</a></li>
+  </ul>
+</nav>
 
 		 
 </div>
