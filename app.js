@@ -98,29 +98,6 @@ class MyMain extends React.Component {
 		  });
 		})
   }
-  
-  prosesCek(){
-	 var arr = [];
-	 arr.push("Hasil 1 - "+this.inputAngka+" : ");	
-	for(var i=1;i<=parseInt(this.inputAngka);i++){		
-		if(parseInt(i) % 2 == 0){
-			arr.push(i+" : Bilangan Genap");	
-		}
-		else{
-			arr.push(i+" : Bilangan Ganjil");	
-		}
-	}
-	
-    return this.theResult(arr);
-  }
-  
-  theResult(arr){
-	  var result = "";
-	for(var i=0;i<parseInt(arr.length);i++){		
-		result += arr[i]+"<br/>";
-	}  
-	return result;
-  }
 
   myChange(event) {
 	var keynum
@@ -178,15 +155,13 @@ class MyMain extends React.Component {
   }
   getSearch(event) {
 	this.query = event.target.inputSearch.value;
-	this.setState({
-		     page : 1,
-    });
 	console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page=1");
 	fetch("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page=1")
       .then(res => res.json())
       .then(
         (result) => {
 	   this.setState({
+		    page : 1,
             rowsSearch: result.results,
 			total_pagesSearch:result.total_pages,
 			FormSearchstyle:{
