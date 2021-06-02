@@ -39,7 +39,14 @@ class MyMain extends React.Component {
 		display:"none"
 	},FormDetail:{
 		display:"none"
-	}};
+	},
+	detail:{
+		title:'',
+		vote_count:'',
+		release_date:'',
+		poster_path:''
+	}
+	};
  	this.myCategory = this.myCategory.bind(this);
 	this.getSearch = this.getSearch.bind(this);
 	this.nextPage = this.nextPage.bind(this);
@@ -119,18 +126,19 @@ class MyMain extends React.Component {
   
  
   getDetail(data) {
-       let rowsx = [];
-       rowsx[0] = data;
+	   let poster_path =  "https://image.tmdb.org/t/p/w500/" + data.poster_path;
+	   let vote_count = 0;
 	   this.setState({
-            rows1 : rowsx,
-			FormSearchstyle:{
-		display:"none"
-	},FormCategorystyle:{
-		display:"none"
-	},FormDetail:{
-		display:"block"
-	}
+		  detail:{
+			  title:data.title,
+			  vote_count:data.vote_count,
+			  release_date:data.release_date,
+			  poster_path:poster_path,
+			  
+		  }
 	   });
+	   $('#DMmodal').modal('toggle');
+	   
   }
   goToPage(thePage,e) {
 	  console.log("https://api.themoviedb.org/3/search/movie?api_key=b703e8213e3a53d5123f64ef56c52d8c&language=en-US&query="+encodeURIComponent(this.query)+"&page="+thePage)
@@ -264,17 +272,24 @@ class MyMain extends React.Component {
 	<div>
 	<nav className="navbar navbar-expand-lg navbar-light bg-primary">
   <div className="container-fluid">
-    <a className="navbar-brand" href="#">Menu</a>
+    <a className="navbar-brand" href="#"><svg width="15" height="15" fill="currentColor" className="bi bi-layout-text-sidebar" viewBox="0 0 16 16">
+  <path d="M3.5 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM3 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5z"/>
+  <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm12-1v14h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zm-1 0H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h9V1z"/>
+</svg> Menu</a>
     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span className="navbar-toggler-icon"></span>
     </button>
     <div className="collapse navbar-collapse" id="navbarSupportedContent">
       <ul className="navbar-nav me-auto mb-2 mb-lg-0">
         <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="#" onClick={this.showMenuSearch} >Search</a>
+          <a className="nav-link active" aria-current="page" href="#" onClick={this.showMenuSearch} ><svg width="15" height="15" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+</svg> Search</a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href="#" onClick={this.showMenuCategory} >Category</a>
+          <a className="nav-link" href="#" onClick={this.showMenuCategory} ><svg width="15" height="15" fill="currentColor" className="bi bi-grid-fill" viewBox="0 0 16 16">
+  <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+</svg> Category</a>
         </li>
       </ul>
     </div>
@@ -299,12 +314,16 @@ class MyMain extends React.Component {
   </div>
   <div style={this.state.FormSearchstyle}>
      <form className="mt-3" onSubmit={this.getSearch}>
-	 <h2><span className="badge bg-secondary">Search Movie TMDB</span></h2>
+	 <h2><span className="badge bg-secondary"><svg width="20" height="20" fill="currentColor" className="bi bi-search" viewBox="0 0 16 16">
+  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+</svg> Search Movie TMDB</span></h2>
   <div className="mb-3">
     <label htmlFor="inputSearch" className="form-label">Keyword</label>
     <input type="text" className="form-control" id="inputSearch" name = "inputSearch" required/>
   </div>
-  <button type="submit" className="btn btn-primary mb-2 ">Search</button>
+  <button type="submit" className="btn btn-primary mb-2 ">Search <svg width="16" height="16" fill="currentColor" className="bi bi-save2" viewBox="0 0 16 16">
+  <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v4.5h2a.5.5 0 0 1 .354.854l-2.5 2.5a.5.5 0 0 1-.708 0l-2.5-2.5A.5.5 0 0 1 5.5 6.5h2V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+</svg></button>
 </form>
 <div className="row">
           <div className="col">
@@ -344,7 +363,7 @@ class MyMain extends React.Component {
 				   <tr key={String(k) + String(v)}><th scope="col">{page}</th>
 				   <th scope="col">{k.title}</th>
 				   <th scope="col">{k.vote_count}</th>
-				   <th scope="col"> <img src={poster_path} onClick={() => this.getDetail(k)} alt={k.title} width="130" height="130"/> </th>
+				   <th scope="col"> <img className="btn" src={poster_path} onClick={() => this.getDetail(k)} alt={k.title} width="130" height="130"/> </th>
 				   <th scope="col">{k.release_date}</th>
 				   </tr>) 
 				})}
@@ -361,9 +380,41 @@ class MyMain extends React.Component {
 		 
 </div>
 </div>
+
+<div className="modal fade" id="DMmodal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div className="modal-dialog modal-lg">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="exampleModalLabel">{this.state.detail.title || ""}</h5>
+        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div className="modal-body">
+       <div className="row g-3" >
+	 <div className="col-md-5 ms-5">
+	<img src={this.state.detail.poster_path} alt={this.state.detail.title} width="300" height="300"/>
+  </div>
+  <div className="col-md-5 ms-5">
+    <label className="form-label">Title</label>
+	<label className="form-control mb-4">{this.state.detail.title}</label>
+	<label className="form-label">Vote Count</label>
+	<label className="form-control mb-4">{this.state.detail.vote_count}</label>
+	<label className="form-label">Release Date</label>
+	<label className="form-control">{this.state.detail.release_date}</label>
+  </div>	
+</div>
+      </div>
+      <div className="modal-footer">
+        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div style={this.state.FormCategorystyle}>
 <form onSubmit={this.myCategory} className="mt-3">
-<h2><span className="badge bg-secondary">Category Movie TMDB</span></h2>
+<h2><span className="badge bg-secondary"><svg width="20" height="20" fill="currentColor" className="bi bi-grid-fill" viewBox="0 0 16 16">
+  <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+</svg> Category Movie TMDB</span></h2>
    <div className="mb-3">
     <label htmlFor="category" className="form-label">Category</label>
     <select name="category" id="category" className="form-control">
@@ -379,7 +430,10 @@ class MyMain extends React.Component {
   <option value="15">15</option>
 </select>
   </div>
-  <button type="submit" className="btn btn-primary">Submit</button>
+  <button type="submit" className="btn btn-primary">Submit <svg width="16" height="16" fill="currentColor" className="bi bi-play-btn" viewBox="0 0 16 16">
+  <path d="M6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z"/>
+  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm15 0a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+</svg></button>
    <h3><span className="badge bg-info mt-4 text-start" dangerouslySetInnerHTML={{__html: this.state.result}}></span></h3> 
 </form>
 <div className="row">
@@ -410,7 +464,7 @@ class MyMain extends React.Component {
 				   <tr key={String(k) + String(v)}><th scope="col">{v+1}</th>
 				   <th scope="col">{k.title}</th>
 				   <th scope="col">{k.vote_count}</th>
-				   <th scope="col"> <img src={poster_path} onClick={() => this.getDetail(k)} alt="Girl in a jacket" width="130" height="130"/> </th>
+				   <th scope="col"> <img className="btn" src={poster_path} onClick={() => this.getDetail(k)} alt="Girl in a jacket" width="130" height="130"/> </th>
 				   <th scope="col">{k.release_date}</th>
 				   </tr>) 
 				})}
